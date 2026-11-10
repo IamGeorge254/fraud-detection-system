@@ -1,0 +1,27 @@
+[project]
+name = "fraud-detection"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "George Mwaura", email = "gmwaura560@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.162.2",
+    "imbalanced-learn>=0.14.2",
+    "jupyter>=1.1.1",
+    "matplotlib>=3.11.2",
+    "numpy>=2.4.6",
+    "pandas>=3.1.1",
+    "scikit-learn>=1.9.1",
+    "seaborn>=0.13.2",
+    "uvicorn>=0.54.0",
+]
+
+[project.scripts]
+fraud-detection = "fraud_detection:main"
+
+[build-system]
+requires = ["uv_build>=0.12.1,<0.13.0"]
+build-backend = "uv_build"
