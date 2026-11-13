@@ -22,7 +22,7 @@ COPY models/ ./models/
 COPY src/fraud_detection/ ./src/fraud_detection/
 
 # Expose API port
-EXPOSE 8000
+EXPOSE 10000
 
 # Start FastAPI
-CMD ["uvicorn", "main:app", "--app-dir", "src/fraud_detection", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "uvicorn main:app --app-dir src/fraud_detection --host 0.0.0.0 --port ${PORT:-10000}"]

@@ -4,7 +4,7 @@
 # # FRAUD DETECTION SYSTEM
 # #### The goal is to build a machine learning-powered fraud detection system that evaluates financial transactions that identifies potentially fraudulent activity, and flags suspicious transactions before they are completed.
 
-# In[4]:
+# In[3]:
 
 
 import pandas as pd
@@ -17,7 +17,7 @@ import shutil
 from pathlib import Path
 
 
-# In[5]:
+# In[4]:
 
 
 # Creating Data folder where we will store our csv file
@@ -25,7 +25,7 @@ data_folder = Path("data")
 data_folder.mkdir(exist_ok=True)
 
 
-# In[6]:
+# In[5]:
 
 
 # Coping the dataset
@@ -36,14 +36,14 @@ destination = data_folder / source.name
 shutil.copy2(source, destination)
 
 
-# In[7]:
+# In[6]:
 
 
 # Confirming if file is copied
 destination.exists()
 
 
-# In[8]:
+# In[7]:
 
 
 # Loading Datatset
@@ -54,19 +54,19 @@ df.head()
 
 # # EDA
 
-# In[9]:
+# In[8]:
 
 
 df.shape
 
 
-# In[10]:
+# In[9]:
 
 
 df.info()
 
 
-# In[11]:
+# In[10]:
 
 
 # Checking for any duplicates
@@ -75,26 +75,26 @@ df[df.duplicated()]
 
 # #### What we want is to build a fraud detection that's able to detect a fraud before a tranasaction. So we would not use columns like 'oldbalanceOrg', 'newbalanceOrg', 'oldbalanceDest' & 'newbalanceDest'
 
-# In[12]:
+# In[11]:
 
 
 df.columns
 
 
-# In[13]:
+# In[12]:
 
 
 df_new = df[['step', 'type', 'amount', 'nameOrig', 
              'nameDest', 'isFraud', 'isFlaggedFraud']]
 
 
-# In[14]:
+# In[13]:
 
 
 df_new.head()
 
 
-# In[15]:
+# In[14]:
 
 
 # Renaming columns
@@ -103,7 +103,7 @@ df_new.columns = df_new.columns.str.lower()
 df_new.columns
 
 
-# In[16]:
+# In[15]:
 
 
 # Renaming my str variables
@@ -115,7 +115,7 @@ for col in strings:
 df_new.head()
 
 
-# In[17]:
+# In[16]:
 
 
 # Checking unique values in each feature
@@ -125,7 +125,7 @@ for col in df_new.columns:
     print("--------------------")
 
 
-# In[18]:
+# In[17]:
 
 
 df_new['isflaggedfraud'].nunique()
@@ -137,7 +137,7 @@ df_new['isflaggedfraud'].nunique()
 
 # # FEATURE IMPORTANCE: MUTUAL INFORMATION
 
-# In[19]:
+# In[18]:
 
 
 categorical = ['type', 'nameorig', 'namedest']
@@ -157,7 +157,7 @@ mi.sort_values(ascending=False)
 
 # # FEATURE IMPORTANCE: CORRELATION
 
-# In[20]:
+# In[19]:
 
 
 numerical = ['step', 'amount']
@@ -174,33 +174,33 @@ df_new[numerical].corrwith(df_new.isfraud)
 # #### - There is a weak positive linear relationship between transaction amount and fraud.
 # #### - This suggests that larger transaction amounts tend to be associated with fraud, although the relationship is not strong.
 
-# In[21]:
+# In[20]:
 
 
 # Our new dataframe
 df_new = df_new[['step', 'type', 'amount', 'isfraud']]
 
 
-# In[22]:
+# In[21]:
 
 
 df_new.head()
 
 
-# In[23]:
+# In[22]:
 
 
 # Lets check the distribution of isfraud feature
 df_new['isfraud'].value_counts()
 
 
-# In[24]:
+# In[23]:
 
 
 df_new['isfraud'].value_counts(normalize=True) * 100
 
 
-# In[25]:
+# In[24]:
 
 
 # Plot our distribution
@@ -216,7 +216,7 @@ plt.show()
 
 # # SPLITTING OUR DATA OR VALIDATION FRAMEWORK
 
-# In[26]:
+# In[25]:
 
 
 from sklearn.model_selection import train_test_split
@@ -228,13 +228,13 @@ df_train, df_val = train_test_split(df_full_train, test_size=0.25, random_state=
 
 # #### We use stratify to ensure that the training, validation and test sets maintain approximately the same proportion of fraudulent and legitimate transactions because its highly imbalanced.
 
-# In[27]:
+# In[26]:
 
 
 len(df_train), len(df_val), len(df_test)
 
 
-# In[28]:
+# In[27]:
 
 
 df_train = df_train.reset_index(drop='True')
@@ -242,7 +242,7 @@ df_val = df_val.reset_index(drop='True')
 df_test = df_test.reset_index(drop='True')
 
 
-# In[29]:
+# In[28]:
 
 
 y_train = df_train.isfraud.values
@@ -250,7 +250,7 @@ y_test = df_test.isfraud.values
 y_val = df_val.isfraud.values
 
 
-# In[30]:
+# In[29]:
 
 
 del df_train['isfraud']
@@ -258,7 +258,7 @@ del df_val['isfraud']
 del df_test['isfraud']
 
 
-# In[31]:
+# In[30]:
 
 
 # Lets check if startification worked
@@ -276,7 +276,7 @@ for name, y in [
 
 # # ONEHOTENCODING
 
-# In[32]:
+# In[31]:
 
 
 categorical = ['type']
@@ -284,7 +284,7 @@ categorical = ['type']
 numerical = ['step', 'amount']
 
 
-# In[33]:
+# In[32]:
 
 
 # Import DictVectorizer
@@ -293,7 +293,7 @@ from sklearn.feature_extraction import DictVectorizer
 dv = DictVectorizer(sparse=False)
 
 
-# In[34]:
+# In[33]:
 
 
 train_dict = df_train[categorical + numerical].to_dict(orient='records')
@@ -306,7 +306,7 @@ val_dict = df_val[categorical + numerical].to_dict(orient='records')
 X_val = dv.transform(val_dict)
 
 
-# In[35]:
+# In[34]:
 
 
 print(X_train.shape)
@@ -316,7 +316,7 @@ print(dv.get_feature_names_out())
 
 # # LOGISTIC REGRESSION
 
-# In[36]:
+# In[35]:
 
 
 from sklearn.linear_model import LogisticRegression
@@ -325,14 +325,14 @@ model = LogisticRegression()
 model.fit(X_train, y_train)
 
 
-# In[37]:
+# In[36]:
 
 
 # Soft predictions. Comes into 2 columns left = 0 & Right = 1. We only need the right part
 model.predict_proba(X_val)
 
 
-# In[38]:
+# In[37]:
 
 
 y_pred = model.predict_proba(X_val)[:,1]
@@ -340,20 +340,20 @@ y_pred = model.predict_proba(X_val)[:,1]
 y_pred
 
 
-# In[39]:
+# In[38]:
 
 
 # If the model thinks the probability of isfraud is 50% or more, we predict that the customer will fraud.
 isfraud_decision = (y_pred >= 0.5)
 
 
-# In[40]:
+# In[39]:
 
 
 y_val[0:30]
 
 
-# In[41]:
+# In[40]:
 
 
 isfraud_decision.astype(int)[0:30]
@@ -363,7 +363,7 @@ isfraud_decision.astype(int)[0:30]
 
 # # MODEL EVALUATION
 
-# In[42]:
+# In[41]:
 
 
 from sklearn.metrics import accuracy_score
@@ -373,7 +373,7 @@ accuracy_score(y_val, isfraud_decision)
 
 # # CONFUSSION MATRIX
 
-# In[43]:
+# In[42]:
 
 
 from sklearn.metrics import confusion_matrix
@@ -388,16 +388,6 @@ confusion_matrix(y_val, isfraud_decision)
 # - Out of 229 actual fraudulent transactions, it detected only 16.
 # - It failed to detect 213 fraudulent transactions, classifying them as legitimate.
 # 
-# #### Interpretation
-# 
-# Although the model achieved high accuracy, it failed to identify most fraudulent transactions.
-# 
-# This highlights a major challenge when working with an imbalanced dataset: accuracy alone can be misleading because the majority class (legitimate transactions) dominates the results. Therefore, we need to evaluate the model using additional metrics such as:
-# 
-# - **Precision:** How often fraud predictions are correct.
-# - **Recall:** How many actual fraudulent transactions are detected.
-# - **F1-score:** The balance between precision and recall.
-# 
 # #### Conclusion
 # 
 # The confusion matrix reveals that Logistic Regression performs well at identifying legitimate transactions but struggles to detect fraudulent activity. We need to explore other models that can improve fraud detection.
@@ -405,7 +395,7 @@ confusion_matrix(y_val, isfraud_decision)
 
 # # PRECISION, RECALL & F1-SCORE
 
-# In[44]:
+# In[43]:
 
 
 from sklearn.metrics import precision_score, recall_score, f1_score
@@ -456,7 +446,7 @@ print('F1-score:', f1_score(y_val, isfraud_decision))
 
 # # DECISSION TREE
 
-# In[45]:
+# In[44]:
 
 
 from sklearn.tree import DecisionTreeClassifier
@@ -473,7 +463,7 @@ y_pred = model.predict_proba(X_val)[:, 1]
 isfraud_decision = (y_pred >= 0.5)
 
 
-# In[46]:
+# In[45]:
 
 
 print('Accuracy:', accuracy_score(y_val, isfraud_decision))
@@ -522,7 +512,7 @@ print('F1-score:', f1_score(y_val, isfraud_decision))
 
 # # RANDOM FOREST
 
-# In[47]:
+# In[46]:
 
 
 from sklearn.ensemble import RandomForestClassifier
@@ -536,7 +526,7 @@ model = RandomForestClassifier(
 model.fit(X_train, y_train)
 
 
-# In[48]:
+# In[47]:
 
 
 # Make predictions
@@ -545,7 +535,7 @@ y_pred = model.predict_proba(X_val)[:, 1]
 isfraud_decision = (y_pred >= 0.5)
 
 
-# In[49]:
+# In[48]:
 
 
 # Model evaluation
@@ -593,7 +583,7 @@ print('F1-score:', f1_score(y_val, isfraud_decision))
 
 # # THRESHHOLDS
 
-# In[50]:
+# In[49]:
 
 
 thresholds = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
@@ -629,7 +619,7 @@ for threshold in thresholds:
 # Further evaluation is required before selecting the final threshold.
 # 
 
-# In[51]:
+# In[50]:
 
 
 thresholds = np.arange(0.60, 0.81, 0.01)
@@ -658,33 +648,14 @@ df_thresholds.sort_values(
 )
 
 
-# ### Threshold Fine-Tuning Observations
-# 
-# After testing thresholds between 0.6 and 0.8 using increments of 0.01, the threshold of 0.67 achieved the highest F1-score of 69.44%.
-# 
-# At this threshold, the model achieved:
-# - Precision: 95.42%
-# - Recall: 54.59%
-# - F1-score: 69.44%
-# 
-# This indicates that approximately 95% of transactions predicted as fraudulent were actually fraudulent, while the model successfully identified approximately 55% of all fraudulent transactions.
-# 
-# Compared to the threshold of 0.7, the threshold of 0.67 produced a slightly higher F1-score.
-# 
-# ### Conclusion
+# ### Observations
 # 
 # The threshold of 0.67 provides the best balance between precision and recall among the thresholds tested.
 # 
 # We will use 0.67 as our selected classification threshold for the Random Forest model, subject to final evaluation on the test dataset.
 # 
 
-# In[52]:
-
-
-df_test
-
-
-# In[53]:
+# In[51]:
 
 
 test_dict = df_test[categorical + numerical].to_dict(orient='records')
@@ -696,7 +667,7 @@ y_pred_test = model.predict_proba(X_test)[:, 1]
 isfraud_test = (y_pred_test >= 0.67)
 
 
-# In[54]:
+# In[52]:
 
 
 # Final Metrics
@@ -707,33 +678,166 @@ print('Recall:', recall_score(y_test, isfraud_test))
 print('F1-score:', f1_score(y_test, isfraud_test))
 
 
-# ### Model Evaluation on Test Dataset
+# # XGBOOST
+
+# In[53]:
+
+
+from xgboost import XGBClassifier
+
+model_xgb = XGBClassifier(
+    n_estimators=100,
+    max_depth=6,
+    learning_rate=0.1,
+    scale_pos_weight=(y_train == 0).sum() / (y_train == 1).sum(),
+    random_state=42,
+    n_jobs=-1,
+    eval_metric='logloss'
+)
+
+model_xgb.fit(X_train, y_train)
+
+# Make predictions
+y_pred_xgb = model_xgb.predict_proba(X_val)[:, 1]
+
+isfraud_decision_xgb = (y_pred_xgb >= 0.5).astype(int)
+
+
+# In[54]:
+
+
+print('Accuracy:', accuracy_score(y_val, isfraud_decision_xgb))
+print('Confusion Matrix:\n', confusion_matrix(y_val, isfraud_decision_xgb))
+print('Precision:', precision_score(y_val, isfraud_decision_xgb))
+print('Recall:', recall_score(y_val, isfraud_decision_xgb))
+print('F1-score:', f1_score(y_val, isfraud_decision_xgb))
+
+
+# ### Observations
 # 
-# After selecting a classification threshold of 0.67 using the validation dataset, we evaluated the Random Forest model on the unseen test dataset.
+# The XGBoost model achieved an accuracy of **96.39%**, precision of **2.36%**, recall of **79.48%**, and an F1-score of **4.59%**.
 # 
-# The model achieved an accuracy of 99.95%.
+# From the confusion matrix:
 # 
-# The confusion matrix shows that the model correctly identified 128 fraudulent transactions and 209,479 legitimate transactions. It incorrectly classified 8 legitimate transactions as fraudulent and failed to identify 100 fraudulent transactions.
+# - **True Negatives (201,970):** The model correctly classified 201,970 legitimate transactions.
+# - **False Positives (7,516):** The model incorrectly classified 7,516 legitimate transactions as fraudulent.
+# - **False Negatives (47):** The model failed to identify 47 actual fraudulent transactions.
+# - **True Positives (182):** The model correctly identified 182 fraudulent transactions.
 # 
-# The precision of 94.12% indicates that approximately 94% of transactions predicted as fraudulent were actually fraudulent.
+# **Key observations:**
 # 
-# The recall of 56.14% indicates that the model successfully identified approximately 56% of all fraudulent transactions.
+# 1. **High recall (79.48%):** The model successfully detected approximately 79 out of every 100 actual fraudulent transactions. This is an improvement over Random Forest, which achieved 54.59% recall.
 # 
-# The F1-score was 70.33%, showing a reasonable balance between precision and recall.
+# 2. **Low precision (2.36%):** Only about 2 out of every 100 transactions flagged as fraudulent were actually fraudulent. This indicates a high number of false alarms.
 # 
-# ### Validation and Test Comparison
+# 3. **False positives:** Out of 209,486 legitimate transactions, 7,516 (approximately 3.59%) were incorrectly flagged as fraud.
 # 
-# The validation F1-score was 69.44%, while the test F1-score was 70.33%.
+# 4. **Accuracy limitation:** Although the model achieved 96.39% accuracy, this metric alone does not provide a reliable measure of performance because the dataset is highly imbalanced, with very few fraudulent transactions.
 # 
-# The similarity between the validation and test results suggests that the model generalises reasonably well to unseen data.
+# **Conclusion:**
 # 
-# ### Conclusion
+# XGBoost detected more fraudulent transactions than Random Forest, identifying 182 fraud cases compared to Random Forest's 125. It also reduced the number of missed fraud cases from 104 to 47. However, this improvement came at the cost of significantly more false positives.
 # 
-# The Random Forest model, using a classification threshold of 0.67, achieved an F1-score of 70.33% on the test dataset.
+# The results demonstrate that XGBoost is better at capturing fraudulent transactions at the 0.5 threshold, but its precision needs improvement to reduce unnecessary fraud alerts.
 # 
-# It demonstrated high precision, correctly identifying most transactions classified as fraudulent. However, its recall of 56.14% indicates that it still misses approximately 44% of fraudulent transactions.
+
+# ## Fine tuning
+
+# In[55]:
+
+
+thresholds = np.arange(0.60, 0.81, 0.01)
+
+results = []
+
+for threshold in thresholds:
+    isfraud_decision = (y_pred_xgb >= threshold)
+
+    precision = precision_score(y_val, isfraud_decision)
+    recall = recall_score(y_val, isfraud_decision)
+    f1 = f1_score(y_val, isfraud_decision)
+
+    results.append({
+        'threshold': threshold,
+        'precision': precision,
+        'recall': recall,
+        'f1_score': f1
+    })
+
+df_thresholds = pd.DataFrame(results)
+
+df_thresholds.sort_values(
+    by='f1_score',
+    ascending=False
+)
+
+
+# ## Model Evaluation on test data
+
+# In[58]:
+
+
+test_dict = df_test[categorical + numerical].to_dict(orient='records')
+
+X_test = dv.transform(test_dict)
+
+y_pred_test_xgb = model_xgb.predict_proba(X_test)[:, 1]
+
+isfraud_test_xgb = (y_pred_test_xgb >= 0.5).astype(int)
+
+
+# In[60]:
+
+
+# Final Metrics
+print('Accuracy:', accuracy_score(y_test, isfraud_test_xgb))
+print('Confusion Matrix:\n', confusion_matrix(y_test, isfraud_test_xgb))
+print('Precision:', precision_score(y_test, isfraud_test_xgb))
+print('Recall:', recall_score(y_test, isfraud_test_xgb))
+print('F1-score:', f1_score(y_test, isfraud_test_xgb))
+
+
+# In[61]:
+
+
+test_dict = df_test[categorical + numerical].to_dict(orient='records')
+
+X_test = dv.transform(test_dict)
+
+y_pred_test_xgb = model_xgb.predict_proba(X_test)[:, 1]
+
+isfraud_test_xgb = (y_pred_test_xgb >= 0.8).astype(int)
+
+
+# In[62]:
+
+
+# Final Metrics
+print('Accuracy:', accuracy_score(y_test, isfraud_test_xgb))
+print('Confusion Matrix:\n', confusion_matrix(y_test, isfraud_test_xgb))
+print('Precision:', precision_score(y_test, isfraud_test_xgb))
+print('Recall:', recall_score(y_test, isfraud_test_xgb))
+print('F1-score:', f1_score(y_test, isfraud_test_xgb))
+
+
+# ### XGBoost Test Evaluation – Threshold Comparison
 # 
-# Overall, the model performs well in minimising false fraud alerts.
+# I evaluated the XGBoost model using two classification thresholds: 0.5 (standard threshold) and 0.8 (selected through validation threshold tuning).
+# 
+# **Observations:**
+# 
+# 1. **Threshold 0.5:** The model achieved 84.21% recall, correctly identifying 192 out of 228 fraudulent transactions. However, it generated 7,538 false positives, resulting in a low precision of 2.48%.
+# 
+# 2. **Threshold 0.8:** Precision improved from 2.48% to 10.57%, while recall decreased from 84.21% to 72.37%. False positives also reduced significantly, from 7,538 to 1,396.
+# 
+# 3. **F1-score:** The F1-score increased from 4.83% to 18.45%, indicating a better balance between precision and recall at the 0.8 threshold.
+# 
+# **Conclusion:**
+# 
+# Increasing the threshold to 0.8 made XGBoost more selective when identifying fraudulent transactions. Although it detected 27 fewer fraud cases, it reduced false alarms by approximately 81.5%.
+# 
+# The 0.8 threshold provides a more balanced result than 0.5 for this experiment. However, the final threshold should depend on the financial cost of missed fraud versus the operational cost of investigating false alerts.
+# 
 
 # In[ ]:
 
