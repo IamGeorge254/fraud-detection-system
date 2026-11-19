@@ -12,7 +12,7 @@ An end-to-end machine learning project that detects potentially fraudulent finan
 
 ## Project Overview
 
-Financial fraud is a major challenge for digital payment platforms. This project applies machine learning to identify potentially fraudulent transactions based on transaction characteristics.
+** Problem:** Financial fraud is a major challenge for digital payment platforms. This project applies machine learning to identify potentially fraudulent transactions based on transaction characteristics.
 
 The system uses an XGBoost classification model to estimate the probability that a transaction is fraudulent. A classification threshold of **0.8** is applied to determine the final prediction.
 
