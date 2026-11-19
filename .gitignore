@@ -16,11 +16,6 @@ __pycache__/
 # Jupyter files
 .ipynb_checkpoints/
 
-# Dataset
-data/
-script/data/
-*.csv
-
 # Environment variables
 .env
 
